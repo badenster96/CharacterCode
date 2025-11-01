@@ -1,0 +1,14 @@
+# Ignore the entire build directory
+/build/
+
+# Ignore user-specific VS Code settings
+.vscode/
+
+# Ignore common compiled file types
+*.exe
+*.o
+*.obj
+*.dll
+*.lib
+*.a
+*.so

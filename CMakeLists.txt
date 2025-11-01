@@ -25,7 +25,6 @@ file(GLOB SRC_FILES "src/*.cpp")
 #    This line CREATES the target.
 add_executable(
     ${PROJECT_NAME} # The name of your final executable
-    main.cpp        # Your main file
     ${SRC_FILES}    # All your other .cpp files
 )
 

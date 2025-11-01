@@ -4,9 +4,9 @@
 #include <vector>
 #include <string>
 
-#include "Enemy.h"
-#include "Player.h"
-#include "Inventory.h"
+#include "Entities/Enemy.h"
+#include "Entities/Player.h"
+#include "Systems/Inventory.h"
 
 using std::string;
 using std::cout;

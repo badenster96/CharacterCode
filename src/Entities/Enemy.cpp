@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "Entities/Enemy.h"
 
 Enemy::Enemy() {
         Attack atk;

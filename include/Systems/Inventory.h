@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Item.h"
-#include "Weapon.h"
-#include "Gizmo.h"
-#include "Gadget.h"
-#include "Training.h"
+#include "Inventory/Item.h"
+#include "Inventory/Weapon.h"
+#include "Inventory/Gizmo.h"
+#include "Inventory/Gadget.h"
+#include "Inventory/Training.h"
 
 #include <fstream>
 #include <sstream>

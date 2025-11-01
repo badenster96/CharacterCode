@@ -19,13 +19,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # --- Corrected Order ---
 
 # 1. Find all your .cpp files in the "src" directory
-file(GLOB SRC_FILES "src/*.cpp")
+file(GLOB_RECURSE SRC_FILES "src/*.cpp")
 
 # 2. Add the executable target.
 #    This line CREATES the target.
 add_executable(
     ${PROJECT_NAME} # The name of your final executable
     ${SRC_FILES}    # All your other .cpp files
+)
+target_compile_definitions(${PROJECT_NAME} PRIVATE 
+    "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\""
 )
 
 # 3. Add your "include" directory to the target.

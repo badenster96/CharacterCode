@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Inventory.h"
+#include "Systems/Inventory.h"
 
 Inventory::Inventory() {
         loadInventory();

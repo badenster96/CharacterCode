@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "Object.h"
+#include "Inventory/Object.h"
 #include "gameplay/Attack.h"
 #include <vector>
 

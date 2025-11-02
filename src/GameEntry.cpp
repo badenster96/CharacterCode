@@ -6,7 +6,7 @@
 #include "Entities/Enemy.h"
 #include "Entities/Player.h"
 #include "Systems/Inventory.h"
-#include "TerminalIO.h"
+#include "IO/TerminalIO.h"
 
 int main () {
     TerminalIO io;

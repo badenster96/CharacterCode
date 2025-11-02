@@ -1,7 +1,7 @@
 #include "Systems/CombatSystem.h"
 #include "Entities/Player.h"
 #include "Entities/Enemy.h"
-#include "EnemyHandler.h"
+#include "Systems/EnemyHandler.h"
 #include "gameplay/Attack.h"
 
 // The constructor saves the references

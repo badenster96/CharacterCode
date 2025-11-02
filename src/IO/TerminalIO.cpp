@@ -1,7 +1,7 @@
 // IO in the terminal, for use with configuring the items
 // Do not use this function in the main game!
 
-#include "TerminalIO.h"
+#include "IO/TerminalIO.h"
 
 
 TerminalIO::TerminalIO () {

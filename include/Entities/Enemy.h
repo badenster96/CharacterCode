@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "Pawn.h"
+#include "Entities/Pawn.h"
 
 class Enemy : public Pawn {
     public:

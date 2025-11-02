@@ -38,7 +38,7 @@ The rarity of the upgrade determines the amount of the upgrade the weapon is get
 
 #pragma once
 
-#include "Pawn.h"
+#include "Entities/Pawn.h"
 #include "Inventory/Item.h"
 
 #include <string>

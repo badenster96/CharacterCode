@@ -5,7 +5,7 @@
 #pragma once
 
 #include "Object.h"
-#include "Attack.h"
+#include "gameplay/Attack.h"
 #include <vector>
 
 struct Pawn : public Object {

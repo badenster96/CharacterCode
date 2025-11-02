@@ -2,7 +2,7 @@
 #include "Entities/Player.h"
 #include "Entities/Enemy.h"
 #include "EnemyHandler.h"
-#include "Attack.h"
+#include "gameplay/Attack.h"
 
 // The constructor saves the references
 CombatSystem::CombatSystem(Player& player, EnemyHandler& enemies)

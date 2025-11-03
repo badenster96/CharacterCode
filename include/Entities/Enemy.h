@@ -3,9 +3,10 @@
 
 #pragma once
 
-#include "Entities/Pawn.h"
+#include "Entities/Model.h"
+#include <vector>
 
-class Enemy : public Pawn {
+class Enemy : public Model {
     public:
     Enemy();
     Enemy(Attack setAtk);

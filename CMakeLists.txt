@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.10)
 
 # Set the project name
 project(CharacterCode)
+# initialize clangd
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 link_directories(

@@ -1,5 +1,3 @@
-#include "_3DModelLoader.h"
-#include <TextureLoader.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -7,10 +5,13 @@
 #include <iostream>
 #include <algorithm>
 
+#include "Graphics/_3DModelLoader.h"
+#include "Graphics/TextureLoader.h"
+
 // Table of precalculated normals
 // CHANGED: from vec3_t to vec3
 static const vec3 anorms_table[162] = {
-    #include "Anorms.h"
+    #include "External/Anorms.h"
     // This assumes Anorms.h contains data like {x, y, z}, {x, y, z}, ...
     // which can initialize both float[3] and vec3
 };

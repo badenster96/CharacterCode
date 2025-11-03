@@ -1,4 +1,4 @@
-#include "Inventory/Object.h"
+#include "Virtuals/Object.h"
 
 #include <unordered_map>
 #include <string>

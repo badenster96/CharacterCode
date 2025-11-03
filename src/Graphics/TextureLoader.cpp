@@ -1,4 +1,4 @@
-#include "Textureloader.h"
+#include "Graphics/TextureLoader.h"
 #include <iostream> // For error messages
 
 TextureLoader::TextureLoader() : textID(0), width(0), height(0)

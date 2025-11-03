@@ -16,6 +16,7 @@ struct Object {
         void setID(int newID);;
         void setStats(std::unordered_map<std::string,double> newStats);
         void setStat(std::string stat, double newValue);
+
         std::string name, type;
         int ID;
         std::unordered_map<std::string, double> stats;

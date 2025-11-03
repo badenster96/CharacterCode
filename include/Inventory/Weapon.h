@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Inventory/Item.h"
+#include "Virtuals/Item.h"
 
 struct Weapon : public Item {
     // Weapons modify several base stats, but have a limit of three

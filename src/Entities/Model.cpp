@@ -1,10 +1,7 @@
-#include "Model.h"
-#include "TextureLoader.h"
-#include <math.h>
-
-#ifndef M_PI
-#define M_PI 3.1415926
-#endif
+#include "Entities/Model.h"
+#include "Graphics/TextureLoader.h"
+#include <GL/glut.h> // For glutSolidTorus
+#include <cmath>     // For math
 
 // --- Constructor ---
 Model::Model()
@@ -13,12 +10,12 @@ Model::Model()
     rotateX = 0.0;
     rotateY = 0.0;
     rotateZ = 0.0;
-
     posX = 0.0;
     posY = 0.0;
     posZ = 0.0;
-
-    scale = 1.0;
+    scaleX = 1.0;
+    scaleY = 1.0;
+    scaleZ = 1.0;
 
     // Create this model's own texture loader
     tex = new TextureLoader();
@@ -42,25 +39,26 @@ void Model::initModel(const char* texturePath)
 }
 
 // --- drawModel ---
-// Draw the model using its private member variables
+// This is the "default" draw function.
+// Player will override this.
 void Model::drawModel()
 {
     // Bind this model's specific texture
     tex->bind();
 
-    // Set a default color (will be modulated by texture)
+    // Set a default color
     glColor3f(1.0, 1.0, 1.0);
 
     glPushMatrix();
 
         // Apply transformations based on member variables
         glTranslated(posX, posY, posZ);
-        glRotated(rotateX, 1, 0, 0); // Use the member variables
+        glRotated(rotateX, 1, 0, 0);
         glRotated(rotateY, 0, 1, 0);
         glRotated(rotateZ, 0, 0, 1);
-        glScaled(scale, scale, scale);
+        glScaled(scaleX, scaleY, scaleZ); // Use 3D scale
 
-        // Draw the shape
+        // Draw the default shape
         glutSolidTorus(0.5, 1.5, 40, 40);
 
     glPopMatrix();
@@ -82,23 +80,24 @@ void Model::setRotation(double rx, double ry, double rz)
     rotateZ = rz;
 }
 
-void Model::setScale(double s)
+void Model::setScale(double sx, double sy, double sz)
 {
-    scale = s;
+    scaleX = sx;
+    scaleY = sy;
+    scaleZ = sz;
 }
 
 // --- Adjustment Methods ---
-
-void Model::rotate(double angle, double x, double y, double z)
-{
-    if (x > 0) rotateX += angle;
-    if (y > 0) rotateY += angle;
-    if (z > 0) rotateZ += angle;
-}
 
 void Model::translate(double dx, double dy, double dz)
 {
     posX += dx;
     posY += dy;
     posZ += dz;
+}
+void Model::setObjectID(int newObjID) {
+    objectID = newObjID;
+}
+int Model::getObjectID() {
+    return objectID;
 }

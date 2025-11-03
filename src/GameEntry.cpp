@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Entities/Enemy.h"
-#include "Player.h"
+#include "Entities/Player.h"
 #include "Systems/Inventory.h"
 #include "IO/TerminalIO.h"
 #include "Scene.h"

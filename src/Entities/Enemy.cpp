@@ -1,3 +1,10 @@
+/* 
+ *  Enemy.cpp
+ *  Implementation of the Enemy class, which represents an enemy entity in the game.
+ *
+ *
+*/
+
 #include "Entities/Enemy.h"
 
 Enemy::Enemy() {

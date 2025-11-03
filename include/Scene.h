@@ -1,51 +1,85 @@
-#ifndef _SCENE_H
-#define _SCENE_H
+#pragma once
 
 #include <windows.h>
-#include <GL/glut.h>
-#include <math.h>
+#include "Helpers/Common.h"
 
-// Forward declarations
+// --- Forward Declarations ---
 class Inputs;
 class Parallax;
 class TextureLoader;
 class Light;
-class _3DModelLoader; // <-- ADD THIS
+class _3DModelLoader;
 
+// --- Constants ---
 #ifndef M_PI
 #define M_PI 3.1415926535
 #endif
 
-class Scene
+/**
+ * @struct SceneSettings
+ * @brief A container for all "magic numbers" and configuration
+ * values for the scene, making them easy to edit in one place.
+ */
+struct SceneSettings
 {
-    public:
-        Scene();
-        virtual ~Scene();
+    // --- Player Movement ---
+    float playerBaseSpeed;
+    float playerSprintMultiplier;
 
-        GLint initGL();
-        GLint drawScene();
-        GLvoid reSizeScene(int width, int height);
-        int winMsg(HWND, UINT, WPARAM, LPARAM);
+    // --- Camera Control ---
+    float mouseSensitivity;
+    float keyZoomSpeed;
+    float wheelZoomAmount;
+    float minZoomDistance;
+    float maxZoomDistance;
+    float minCameraPitch;
+    float maxCameraPitch;
 
-    private:
-        // --- Member Variables ---
-        // _Model* myModel; // <-- REMOVED
-        _3DModelLoader* myAvatar; // <-- ADDED
-
-        Inputs* kBMs;
-        Parallax* foregroundPlx;
-        Parallax* backgroundPlx;
-        TextureLoader* road;
-        TextureLoader* bg;
-        Light* mainLight;
-
-        // --- Camera & Window ---
-        float cameraX, cameraY, cameraZ;
-        int screenWidth, screenHeight;
-
-        // --- Time & Movement ---
-        DWORD lastFrameTicks;
-        float roadRotationY;
+    // --- Parallax Background ---
+    float foregroundScrollSpeed;
+    float backgroundScrollSpeed;
+    float cameraScrollScale; // <-- ADD THIS
 };
 
-#endif // _SCENE_H
+
+
+/**
+ * @class Scene
+ * @brief Manages all objects, logic, and rendering for the main game scene.
+ */
+class Scene
+{
+public:
+    Scene();
+    virtual ~Scene();
+
+    GLint initGL();
+    GLint drawScene();
+    GLvoid reSizeScene(int width, int height);
+    int winMsg(HWND, UINT, WPARAM, LPARAM);
+
+private:
+    // --- Scene Objects (Heap-allocated) ---
+    _3DModelLoader* myAvatar;
+    Inputs* kBMs;
+    Parallax* foregroundPlx;
+    Parallax* backgroundPlx;
+    TextureLoader* road;
+    TextureLoader* bg;
+    Light* mainLight;
+
+    // --- Player & Camera State ---
+    vec3  playerPos;
+    float cameraAngleY;
+    float cameraAngleX;
+    float cameraDistance;
+
+    // --- Window & Time ---
+    int   screenWidth;
+    int   screenHeight;
+    DWORD lastFrameTicks;
+
+    // --- CONFIGURATION ---
+    SceneSettings settings;
+};
+

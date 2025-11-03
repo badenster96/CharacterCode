@@ -2,8 +2,8 @@
 
 // This should include gl.h, glu.h, and glut.h
 // If _common.h doesn't, you might need to include <GL/glut.h> directly
-#include <Common.h>
-#include <SOIL.h>
+#include "Helpers/Common.h"
+#include "External/SOIL.h"
 #include <GL/glu.h> // For mipmapping
 
 class TextureLoader

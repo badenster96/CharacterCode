@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Inventory/Item.h"
+#include "Virtuals/Item.h"
 #include "Inventory/Weapon.h"
 #include "Inventory/Gizmo.h"
 #include "Inventory/Gadget.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Common.h> // Assumes this defines 'struct vec3 {float x, y, z;}'
+#include "Helpers/Common.h" // Assumes this defines 'struct vec3 {float x, y, z;}'
 #include <string>
 
 // Forward declaration

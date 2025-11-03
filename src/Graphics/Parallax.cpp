@@ -1,5 +1,5 @@
-#include "Parallax.h"
-#include "TextureLoader.h"
+#include "Graphics/Parallax.h"
+#include "Graphics/TextureLoader.h"
 #include <gl/glut.h>
 
 Parallax::Parallax()

@@ -17,7 +17,7 @@ void EnemyHandler::addEnemy(Enemy &e) {
     enemies.at(i).isAlive = true;
     if(i == enemies.size()) {
         e.setObjectID(i);
-        e.setAlive(true);
+        e.isAlive = true;
         enemies.push_back(e);
     }
 }

@@ -12,8 +12,8 @@ public:
     CombatSystem(Player& player, EnemyHandler& enemies);
 
     // Your functions now become methods of this class
-    int handlePlayerHit(Attack atk, Enemy& e);
-    int handleEnemyHit(Enemy& e);
+    //int handlePlayerHit(Attack atk, Enemy& e);
+    //int handleEnemyHit(Enemy& e);
 
 private:
     // It holds references to the objects, not copies

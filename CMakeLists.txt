@@ -4,6 +4,11 @@ cmake_minimum_required(VERSION 3.10)
 # Set the project name
 project(CharacterCode)
 
+
+link_directories(
+    "lib"
+)
+
 # --- Define Output Directories ---
 # This line tells CMake to put all executables (.exe) into a "bin" folder
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -31,6 +36,15 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\""
 )
 
+target_link_libraries(CharacterCode
+    SOIL
+    freeglut
+    gdi32
+    opengl32
+    glu32
+    ${OPENGL_LIBRARIES}
+    ${GLUT_LIBRARY}
+)
 # 3. Add your "include" directory to the target.
 #    This line MODIFIES the target.
 target_include_directories(${PROJECT_NAME} PUBLIC include)

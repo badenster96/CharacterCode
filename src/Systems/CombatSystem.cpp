@@ -1,5 +1,5 @@
 #include "Systems/CombatSystem.h"
-#include "Entities/Player.h"
+#include "Player.h"
 #include "Entities/Enemy.h"
 #include "Systems/EnemyHandler.h"
 #include "gameplay/Attack.h"
@@ -11,11 +11,13 @@ CombatSystem::CombatSystem(Player& player, EnemyHandler& enemies)
     // Ready to work
 }
 
+/*
 int CombatSystem::handlePlayerHit(Attack atk, Enemy& e) {
     double tempDamage = m_player.attacks.at(0).damage; // We can access m_player
     e.stats["Health"] -= tempDamage;
     return 1;
 }
+
 
 int CombatSystem::handleEnemyHit(Enemy& e) {
     double tempDamage = e.attacks.at(0).damage;
@@ -23,3 +25,4 @@ int CombatSystem::handleEnemyHit(Enemy& e) {
     m_player.stats["Health"] -= tempDamage;
     return 1;
 }
+    */

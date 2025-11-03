@@ -1,9 +1,11 @@
 #include "gameplay/GameLogic.h"
 
-#include "Entities/Player.h"
+#include "Player.h"
 #include "Entities/Enemy.h"
 #include "gameplay/Attack.h"
 
+
+/*
 // Main bridge function to handle enemy attacking a player
 int GameLogic::enemyHitHandler(Enemy &e, Player &p) {
     double tempDamage = e.attacks.at(0).damage;
@@ -28,3 +30,4 @@ int GameLogic::playerHitHandler(Player &p, Attack atk, Enemy &e) {
     e.stats["Health"] -= tempDamage;
     return 1;
 }
+    */

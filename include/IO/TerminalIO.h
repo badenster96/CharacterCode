@@ -5,7 +5,7 @@
 #include <string>
 
 #include "Entities/Enemy.h"
-#include "Entities/Player.h"
+#include "Player.h"
 #include "Systems/Inventory.h"
 
 using std::string;

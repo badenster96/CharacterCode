@@ -14,13 +14,13 @@ Scene::Scene()
     // --- 1. INITIALIZE ALL TWEAKABLE VARIABLES HERE ---
     settings.playerBaseSpeed = 10.0f;
     settings.playerSprintMultiplier = 2.0f;
-    settings.mouseSensitivity = 0.2f;
-    settings.keyZoomSpeed = 10.0f;
-    settings.wheelZoomAmount = 1.0f;
-    settings.minZoomDistance = 2.0f;
-    settings.maxZoomDistance = 50.0f;
-    settings.minCameraPitch = 5.0f;
-    settings.maxCameraPitch = 85.0f;
+    // settings.mouseSensitivity = 0.2f;
+    // settings.keyZoomSpeed = 10.0f;
+    // settings.wheelZoomAmount = 1.0f;
+    // settings.minZoomDistance = 2.0f;
+    // settings.maxZoomDistance = 50.0f;
+    // settings.minCameraPitch = 5.0f;
+    // settings.maxCameraPitch = 85.0f;
     settings.foregroundScrollSpeed = 0.1f; // This is now a relative multiplier
     settings.backgroundScrollSpeed = 0.05f; // This is now a relative multiplier
     
@@ -37,6 +37,7 @@ Scene::Scene()
     backgroundPlx = nullptr;
     road = nullptr;
     bg = nullptr;
+    camera = nullptr;
     mainLight = nullptr;
     playerPos.x = 0.0f;
     playerPos.y = -3.0f;
@@ -60,6 +61,7 @@ Scene::~Scene()
     if (road) delete road;
     if (bg) delete bg;
     if (mainLight) delete mainLight;
+    if (camera) delete camera;
 }
 
 // --- initGL ---
@@ -84,6 +86,7 @@ GLint Scene::initGL()
     backgroundPlx = new Parallax();
     road = new TextureLoader();
     bg = new TextureLoader();
+    camera = new Camera();
     myAvatar->initModel("models/Tekk/tris.md2");
     road->loadTexture("images/road.jpg");
     bg->loadTexture("images/sky.png");
@@ -105,185 +108,146 @@ GLint Scene::drawScene()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // --- 2. HANDLE PLAYER MOVEMENT INPUT ---
-    // (This section is now *only* for player movement)
-    
-    float playerMoveSpeed = settings.playerBaseSpeed * dt;
-    if (kBMs->isSprinting) {
-        playerMoveSpeed *= settings.playerSprintMultiplier;
-    }
+    {
+        // --- PLAYER MOVEMENT (camera-relative) ---
+        float playerMoveSpeed = settings.playerBaseSpeed * dt;
+        if (kBMs->isSprinting) playerMoveSpeed *= settings.playerSprintMultiplier;
 
-    float angleYRad = cameraAngleY * M_PI / 180.0f;
-    vec2 camForward;
-    camForward.x = -sin(angleYRad);
-    camForward.y = -cos(angleYRad);
-    vec2 camRight;
-    camRight.x = cos(angleYRad);
-    camRight.y = -sin(angleYRad);
-    vec2 moveVector = {0.0f, 0.0f};
-    bool isMoving = false;
+        // Use Camera class for direction
+        float angleYRad = camera->angleY * M_PI / 180.0f;  // <-- camera class
+        vec2 camForward = { -sin(angleYRad), -cos(angleYRad) };
+        vec2 camRight   = {  cos(angleYRad), -sin(angleYRad) };
 
-    if (kBMs->isMovingUp) {
-        moveVector.x += camForward.x;
-        moveVector.y += camForward.y;
-        isMoving = true;
-    }
-    if (kBMs->isMovingDown) {
-        moveVector.x -= camForward.x;
-        moveVector.y -= camForward.y;
-        isMoving = true;
-    }
-    if (kBMs->isMovingLeft) {
-        moveVector.x -= camRight.x;
-        moveVector.y -= camRight.y;
-        isMoving = true;
-    }
-    if (kBMs->isMovingRight) {
-        moveVector.x += camRight.x;
-        moveVector.y += camRight.y;
-        isMoving = true;
-    }
+        // Combine movement input
+        vec2 moveVector = {0.0f, 0.0f};
+        if (kBMs->isMovingUp)    { moveVector.x += camForward.x; moveVector.y += camForward.y; }
+        if (kBMs->isMovingDown)  { moveVector.x -= camForward.x; moveVector.y -= camForward.y; }
+        if (kBMs->isMovingLeft)  { moveVector.x -= camRight.x;   moveVector.y -= camRight.y; }
+        if (kBMs->isMovingRight) { moveVector.x += camRight.x;   moveVector.y += camRight.y; }
 
-    // (Player movement and animation logic is unchanged)
-    if (isMoving) {
-        float mag = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y);
-        if (mag > 0.0f) {
+        bool isMoving = (moveVector.x != 0.0f || moveVector.y != 0.0f);
+
+        if (isMoving)
+        {
+            // Normalize movement vector
+            float mag = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y);
             moveVector.x /= mag;
             moveVector.y /= mag;
+
+            // Apply movement
+            playerPos.x += moveVector.x * playerMoveSpeed;
+            playerPos.z += moveVector.y * playerMoveSpeed;
+
+            // Rotate avatar to face movement
+            myAvatar->rotateY = atan2(moveVector.x, moveVector.y) * 180.0f / M_PI;
+            myAvatar->walk();
         }
-        playerPos.x += moveVector.x * playerMoveSpeed;
-        playerPos.z += moveVector.y * playerMoveSpeed;
-        myAvatar->rotateY = atan2(moveVector.x, moveVector.y) * 180.0f / M_PI;
-        myAvatar->walk();
-    } else {
-        myAvatar->stand();
+        else
+        {
+            myAvatar->stand();
+        }
+
+        // Update avatar animation
+        myAvatar->update(dt);
+
     }
-    myAvatar->update(dt);
 
     // --- 3. HANDLE CAMERA ORBIT & ZOOM INPUT ---
-    cameraAngleY += kBMs->mouseDeltaX * settings.mouseSensitivity;
-    cameraAngleX -= kBMs->mouseDeltaY * settings.mouseSensitivity;
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    // --- Update camera ---
+    camera->update(kBMs, dt);
 
-    // Clamp camera pitch
-    if (cameraAngleX > settings.maxCameraPitch) cameraAngleX = settings.maxCameraPitch;
-    if (cameraAngleX < settings.minCameraPitch) cameraAngleX = settings.minCameraPitch;
+    // --- Apply camera view ---
+    camera->applyView(playerPos.x, playerPos.y, playerPos.z);
 
-    // --- ADD THIS: Handle Parallax Scrolling based on Camera Movement ---
-    // We scroll in the *opposite* direction of the mouse movement.
-    // 
-    
-    // Calculate a base scroll amount from the mouse delta
-    float baseScroll = kBMs->mouseDeltaX * settings.cameraScrollScale;
-
-    if (baseScroll > 0) // Mouse moved right, camera pans right
+    // --- 4. HANDLE PARALLAX SCROLLING ---
     {
-        // Scroll background "left"
-        // We use the speeds as *relative multipliers* for the base scroll
+        float baseScroll = kBMs->mouseDeltaX * settings.cameraScrollScale;
         float fg_amount = abs(baseScroll) * settings.foregroundScrollSpeed;
         float bg_amount = abs(baseScroll) * settings.backgroundScrollSpeed;
-        
-        foregroundPlx->scroll(true, "left", fg_amount);
-        backgroundPlx->scroll(true, "left", bg_amount);
-    }
-    else if (baseScroll < 0) // Mouse moved left, camera pans left
-    {
-        // Scroll background "right"
-        float fg_amount = abs(baseScroll) * settings.foregroundScrollSpeed;
-        float bg_amount = abs(baseScroll) * settings.backgroundScrollSpeed;
-        
-        foregroundPlx->scroll(true, "right", fg_amount);
-        backgroundPlx->scroll(true, "right", bg_amount);
-    }
-    // --- END OF NEW PARALLAX LOGIC ---
 
-    // (Camera zoom logic is unchanged)
-    if (kBMs->wheelDelta != 0.0) {
-        cameraDistance -= kBMs->wheelDelta * settings.wheelZoomAmount;
-    }
-    if (kBMs->isZoomingIn) {
-        cameraDistance -= settings.keyZoomSpeed * dt;
-    }
-    if (kBMs->isZoomingOut) {
-        cameraDistance += settings.keyZoomSpeed * dt;
-    }
-    if (cameraDistance < settings.minZoomDistance) cameraDistance = settings.minZoomDistance;
-    if (cameraDistance > settings.maxZoomDistance) cameraDistance = settings.maxZoomDistance;
-
-    // Reset mouse deltas (This must be *after* the parallax logic)
-    kBMs->mouseDeltaX = 0.0;
-    kBMs->mouseDeltaY = 0.0;
-    kBMs->wheelDelta = 0.0;
-
-    // --- 4. DRAW 2D BACKGROUND (ORTHOGRAPHIC) ---
-    // (This section is unchanged)
-    glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0.0, 1.0, 0.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_LIGHTING);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    bg->bind();
-    glBegin(GL_QUADS);
-        glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
-        glTexCoord2f(1.0, 0.0); glVertex2f(1.0, 0.0);
-        glTexCoord2f(1.0, 1.0); glVertex2f(1.0, 1.0);
-        glTexCoord2f(0.0, 1.0); glVertex2f(0.0, 1.0);
-    glEnd();
-    backgroundPlx->drawSquare();
-    glPushMatrix();
-        glScalef(1.0, 1.0, 1.0);
-        foregroundPlx->drawSquare();
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    glPopAttrib();
-
-    // --- 5. DRAW 3D SCENE (PERSPECTIVE) ---
-    // (This section is unchanged)
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    float angleXRad = cameraAngleX * M_PI / 180.0f;
-    float eyeX = playerPos.x + cameraDistance * cos(angleXRad) * sin(angleYRad);
-    float eyeY = playerPos.y + cameraDistance * sin(angleXRad);
-    float eyeZ = playerPos.z + cameraDistance * cos(angleXRad) * cos(angleYRad);
-    gluLookAt(
-        eyeX, eyeY, eyeZ,
-        playerPos.x, playerPos.y, playerPos.z,
-        0.0f, 1.0f, 0.0f
-    );
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_TEXTURE_2D);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glPushMatrix();
-        glTranslatef(0.0f, -5.2f, 0.0f);
-        glScalef(200.0f, 1.0f, 200.0f);
-        road->bind();
-        glNormal3f(0.0f, 1.0f, 0.0f);
-        float textureAspectRatio = 1.0f;
-        if(road->height > 0) {
-            textureAspectRatio = (float)road->width / (float)road->height;
+        if (baseScroll > 0) {
+            foregroundPlx->scroll(true, "left", fg_amount);
+            backgroundPlx->scroll(true, "left", bg_amount);
+        } else if (baseScroll < 0) {
+            foregroundPlx->scroll(true, "right", fg_amount);
+            backgroundPlx->scroll(true, "right", bg_amount);
         }
-        float roadTile_T = 50.0f;
-        float roadTile_S = roadTile_T * textureAspectRatio;
+    }
+
+    // --- 5. DRAW 2D BACKGROUND & PARALLAX (ORTHOGRAPHIC) ---
+    {
+        glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT);
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        gluOrtho2D(0.0, 1.0, 0.0, 1.0);
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_LIGHTING);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+        // Draw background
+        bg->bind();
         glBegin(GL_QUADS);
-            glTexCoord2f(0.0f, 0.0f);       glVertex3f(-1.0f, 0.0f,  1.0f);
-            glTexCoord2f(roadTile_S, 0.0f); glVertex3f( 1.0f, 0.0f,  1.0f);
-            glTexCoord2f(roadTile_S, roadTile_T); glVertex3f( 1.0f, 0.0f, -1.0f);
-            glTexCoord2f(0.0f, roadTile_T); glVertex3f(-1.0f, 0.0f, -1.0f);
+            glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
+            glTexCoord2f(1.0, 0.0); glVertex2f(1.0, 0.0);
+            glTexCoord2f(1.0, 1.0); glVertex2f(1.0, 1.0);
+            glTexCoord2f(0.0, 1.0); glVertex2f(0.0, 1.0);
         glEnd();
-    glPopMatrix();
-    glPushMatrix();
-        glTranslatef(playerPos.x, playerPos.y, playerPos.z);
-        glScalef(0.05, 0.05, 0.05);
-        myAvatar->Draw();
-    glPopMatrix();
+
+        // Draw parallax layers
+        backgroundPlx->drawSquare();
+        glPushMatrix();
+            glScalef(1.0, 1.0, 1.0);
+            foregroundPlx->drawSquare();
+        glPopMatrix();
+
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
+        glPopAttrib();
+    }
+
+    // --- 6. DRAW 3D SCENE (PERSPECTIVE) ---
+    {
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_TEXTURE_2D);
+        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+        // Draw road
+        glPushMatrix();
+            glTranslatef(0.0f, -5.2f, 0.0f);
+            glScalef(200.0f, 1.0f, 200.0f);
+            road->bind();
+            glNormal3f(0.0f, 1.0f, 0.0f);
+
+            float textureAspectRatio = (road->height > 0) ? (float)road->width / (float)road->height : 1.0f;
+            float roadTile_T = 50.0f;
+            float roadTile_S = roadTile_T * textureAspectRatio;
+
+            glBegin(GL_QUADS);
+                glTexCoord2f(0.0f, 0.0f);       glVertex3f(-1.0f, 0.0f,  1.0f);
+                glTexCoord2f(roadTile_S, 0.0f); glVertex3f( 1.0f, 0.0f,  1.0f);
+                glTexCoord2f(roadTile_S, roadTile_T); glVertex3f( 1.0f, 0.0f, -1.0f);
+                glTexCoord2f(0.0f, roadTile_T);       glVertex3f(-1.0f, 0.0f, -1.0f);
+            glEnd();
+        glPopMatrix();
+
+        // Draw player avatar
+        glPushMatrix();
+            glTranslatef(playerPos.x, playerPos.y, playerPos.z);
+            glScalef(0.05f, 0.05f, 0.05f);
+            myAvatar->Draw();
+        glPopMatrix();
+    }
 
     return true;
 }

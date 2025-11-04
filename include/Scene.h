@@ -2,6 +2,8 @@
 
 #include <windows.h>
 #include "Helpers/Common.h"
+#include "Graphics/Camera.h"
+#include "Helpers/Settings.h"
 
 // --- Forward Declarations ---
 class Inputs;
@@ -14,32 +16,6 @@ class _3DModelLoader;
 #ifndef M_PI
 #define M_PI 3.1415926535
 #endif
-
-/**
- * @struct SceneSettings
- * @brief A container for all "magic numbers" and configuration
- * values for the scene, making them easy to edit in one place.
- */
-struct SceneSettings
-{
-    // --- Player Movement ---
-    float playerBaseSpeed;
-    float playerSprintMultiplier;
-
-    // --- Camera Control ---
-    float mouseSensitivity;
-    float keyZoomSpeed;
-    float wheelZoomAmount;
-    float minZoomDistance;
-    float maxZoomDistance;
-    float minCameraPitch;
-    float maxCameraPitch;
-
-    // --- Parallax Background ---
-    float foregroundScrollSpeed;
-    float backgroundScrollSpeed;
-    float cameraScrollScale; // <-- ADD THIS
-};
 
 
 
@@ -67,6 +43,7 @@ private:
     TextureLoader* road;
     TextureLoader* bg;
     Light* mainLight;
+    Camera* camera;
 
     // --- Player & Camera State ---
     vec3  playerPos;
@@ -80,6 +57,6 @@ private:
     DWORD lastFrameTicks;
 
     // --- CONFIGURATION ---
-    SceneSettings settings;
+    Settings settings;
 };
 

@@ -1,5 +1,4 @@
-#ifndef _COMMON_H
-#define _COMMON_H
+#pragma once
 
 #include<iostream>
 #include<windows.h>
@@ -20,11 +19,13 @@ typedef struct{
           float y;
           } vec2;
 
-typedef struct{
-          float x;
-          float y;
-          float z;
-          } vec3;
+typedef struct vec3{
+        float x;
+        float y;
+        float z;
+        vec3() : x(0), y(0), z(0) {}
+        vec3(float X, float Y, float Z) : x(X), y(Y), z(Z) {}
+        } vec3;
 
 typedef struct{
           float r;
@@ -32,6 +33,3 @@ typedef struct{
           float b;
           float a;
           } col4;
-
-
-#endif // _COMMON_H

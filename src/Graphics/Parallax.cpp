@@ -1,6 +1,8 @@
 #include "Graphics/Parallax.h"
 #include "Graphics/TextureLoader.h"
 #include <gl/glut.h>
+#include <iostream>
+#include <iomanip>
 
 Parallax::Parallax()
 {
@@ -16,30 +18,36 @@ Parallax::~Parallax()
     delete bTex;
 }
 
-// CHANGED: This function now draws a simple 2D quad
-// that will fill a (0,0) to (1,1) orthographic view.
-void Parallax::drawSquare()
+void Parallax::draw()
 {
-    glColor3f(1.0, 1.0, 1.0);
+    glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    gluOrtho2D(0.0, 1.0, 0.0, 1.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+    if(!bTex) return;
     bTex->bind();
-
-    glBegin(GL_POLYGON);
-        // OLD: glTexCoord2f(xMin, yMin);
-        glTexCoord2f(xMin, yMax); // <-- FIX
-        glVertex2f(0.0, 0.0); // bottom-left
-
-        // OLD: glTexCoord2f(xMax, yMin);
-        glTexCoord2f(xMax, yMax); // <-- FIX
-        glVertex2f(1.0, 0.0); // bottom-right
-
-        // OLD: glTexCoord2f(xMax, yMax);
-        glTexCoord2f(xMax, yMin); // <-- FIX
-        glVertex2f(1.0, 1.0); // top-right
-
-        // OLD: glTexCoord2f(xMin, yMax);
-        glTexCoord2f(xMin, yMin); // <-- FIX
-        glVertex2f(0.0, 1.0); // top-left
+    glBegin(GL_QUADS);
+        glTexCoord2f(xMin, yMax); glVertex2f(0.0, 0.0); // bottom-left
+        glTexCoord2f(xMax, yMax); glVertex2f(1.0, 0.0); // bottom-right
+        glTexCoord2f(xMax, yMin); glVertex2f(1.0, 1.0); // top-right
+        glTexCoord2f(xMin, yMin); glVertex2f(0.0, 1.0); // top-left
     glEnd();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    glPopAttrib();
 }
 
 void Parallax::parallaxInit(const char* fileName)
@@ -47,29 +55,15 @@ void Parallax::parallaxInit(const char* fileName)
     bTex->loadTexture(fileName);
 }
 
-void Parallax::scroll(bool Auto, string dir, float speed)
+void Parallax::scroll(bool autoScroll, float speedX, float speedY)
 {
-    if(Auto)
-    {
-        if(dir == "up")
-        {
-            yMin -= speed;
-            yMax -= speed;
-        }
-        else if(dir == "down")
-        {
-            yMin += speed;
-            yMax += speed;
-        }
-        else if(dir == "left")
-        {
-            xMin -= speed;
-            xMax -= speed;
-        }
-        else if(dir == "right")
-        {
-            xMin += speed;
-            xMax += speed;
-        }
-    }
+    if (!autoScroll) return;
+
+    // Horizontal scroll
+    xMin += speedX;
+    xMax += speedX;
+
+    // Vertical scroll
+    yMin += speedY;
+    yMax += speedY;
 }

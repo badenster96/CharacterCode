@@ -22,7 +22,12 @@ public:
     float keyZoomSpeed;
     float wheelZoomAmount;
 
+    float targetX;
+    float targetY;
+    float targetZ;
+
     // Methods
     void update(Inputs* input, float dt); // update camera angles & zoom
-    void applyView(float targetX, float targetY, float targetZ); // gluLookAt
+    void setTarget(float x, float y, float z);
+    void applyView(); // gluLookAt
 };

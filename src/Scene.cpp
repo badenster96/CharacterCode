@@ -2,6 +2,7 @@
 
 #include "Graphics/Light.h"
 #include "Graphics/_3DModelLoader.h"
+#include "Entities/Player.h"
 #include "IO/Inputs.h"
 #include "Graphics/Parallax.h"
 #include "Graphics/TextureLoader.h"
@@ -11,24 +12,6 @@
 // --- Constructor ---
 Scene::Scene()
 {
-    // --- 1. INITIALIZE ALL TWEAKABLE VARIABLES HERE ---
-    settings.playerBaseSpeed = 10.0f;
-    settings.playerSprintMultiplier = 2.0f;
-    // settings.mouseSensitivity = 0.2f;
-    // settings.keyZoomSpeed = 10.0f;
-    // settings.wheelZoomAmount = 1.0f;
-    // settings.minZoomDistance = 2.0f;
-    // settings.maxZoomDistance = 50.0f;
-    // settings.minCameraPitch = 5.0f;
-    // settings.maxCameraPitch = 85.0f;
-    settings.foregroundScrollSpeed = 0.1f; // This is now a relative multiplier
-    settings.backgroundScrollSpeed = 0.05f; // This is now a relative multiplier
-    
-    // --- ADD THIS ---
-    // This value scales the raw mouse delta to a scroll amount.
-    // You will need to "tune" this value to get a feel you like.
-    settings.cameraScrollScale = 0.01f;
-
     // --- 2. Initialize Member Pointers ---
     myAvatar = nullptr;
     // ... (rest is the same) ...
@@ -80,7 +63,7 @@ GLint Scene::initGL()
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glEnable(GL_COLOR_MATERIAL);
-    myAvatar = new _3DModelLoader();
+    myAvatar = new Player();
     kBMs = new Inputs();
     foregroundPlx = new Parallax();
     backgroundPlx = new Parallax();
@@ -107,113 +90,22 @@ GLint Scene::drawScene()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // --- 2. HANDLE PLAYER MOVEMENT INPUT ---
-    {
-        // --- PLAYER MOVEMENT (camera-relative) ---
-        float playerMoveSpeed = settings.playerBaseSpeed * dt;
-        if (kBMs->isSprinting) playerMoveSpeed *= settings.playerSprintMultiplier;
-
-        // Use Camera class for direction
-        float angleYRad = camera->angleY * M_PI / 180.0f;  // <-- camera class
-        vec2 camForward = { -sin(angleYRad), -cos(angleYRad) };
-        vec2 camRight   = {  cos(angleYRad), -sin(angleYRad) };
-
-        // Combine movement input
-        vec2 moveVector = {0.0f, 0.0f};
-        if (kBMs->isMovingUp)    { moveVector.x += camForward.x; moveVector.y += camForward.y; }
-        if (kBMs->isMovingDown)  { moveVector.x -= camForward.x; moveVector.y -= camForward.y; }
-        if (kBMs->isMovingLeft)  { moveVector.x -= camRight.x;   moveVector.y -= camRight.y; }
-        if (kBMs->isMovingRight) { moveVector.x += camRight.x;   moveVector.y += camRight.y; }
-
-        bool isMoving = (moveVector.x != 0.0f || moveVector.y != 0.0f);
-
-        if (isMoving)
-        {
-            // Normalize movement vector
-            float mag = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y);
-            moveVector.x /= mag;
-            moveVector.y /= mag;
-
-            // Apply movement
-            playerPos.x += moveVector.x * playerMoveSpeed;
-            playerPos.z += moveVector.y * playerMoveSpeed;
-
-            // Rotate avatar to face movement
-            myAvatar->rotateY = atan2(moveVector.x, moveVector.y) * 180.0f / M_PI;
-            myAvatar->walk();
-        }
-        else
-        {
-            myAvatar->stand();
-        }
-
-        // Update avatar animation
-        myAvatar->update(dt);
-
-    }
-
-    // --- 3. HANDLE CAMERA ORBIT & ZOOM INPUT ---
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    // --- Update camera ---
-    camera->update(kBMs, dt);
+    // Parallax sccrolling
+    float scrollX = kBMs->mouseDeltaX * settings.cameraScrollScale;
+    float scrollY = kBMs->mouseDeltaY * settings.cameraScrollScale;   
+    foregroundPlx->scroll(true, scrollX * settings.foregroundScrollSpeed, 0.0f);
+    backgroundPlx->scroll(true, scrollX * settings.backgroundScrollSpeed, 0.0f);
 
-    // --- Apply camera view ---
-    camera->applyView(playerPos.x, playerPos.y, playerPos.z);
 
-    // --- 4. HANDLE PARALLAX SCROLLING ---
-    {
-        float baseScroll = kBMs->mouseDeltaX * settings.cameraScrollScale;
-        float fg_amount = abs(baseScroll) * settings.foregroundScrollSpeed;
-        float bg_amount = abs(baseScroll) * settings.backgroundScrollSpeed;
+    backgroundPlx->draw();
+    foregroundPlx->draw();
 
-        if (baseScroll > 0) {
-            foregroundPlx->scroll(true, "left", fg_amount);
-            backgroundPlx->scroll(true, "left", bg_amount);
-        } else if (baseScroll < 0) {
-            foregroundPlx->scroll(true, "right", fg_amount);
-            backgroundPlx->scroll(true, "right", bg_amount);
-        }
-    }
+    // Player and camera movement handler
+    myAvatar->handleInputAndMove(dt, camera, kBMs, settings);
 
-    // --- 5. DRAW 2D BACKGROUND & PARALLAX (ORTHOGRAPHIC) ---
-    {
-        glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT);
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        gluOrtho2D(0.0, 1.0, 0.0, 1.0);
-
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
-
-        glDisable(GL_DEPTH_TEST);
-        glDisable(GL_LIGHTING);
-        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-        // Draw background
-        bg->bind();
-        glBegin(GL_QUADS);
-            glTexCoord2f(0.0, 0.0); glVertex2f(0.0, 0.0);
-            glTexCoord2f(1.0, 0.0); glVertex2f(1.0, 0.0);
-            glTexCoord2f(1.0, 1.0); glVertex2f(1.0, 1.0);
-            glTexCoord2f(0.0, 1.0); glVertex2f(0.0, 1.0);
-        glEnd();
-
-        // Draw parallax layers
-        backgroundPlx->drawSquare();
-        glPushMatrix();
-            glScalef(1.0, 1.0, 1.0);
-            foregroundPlx->drawSquare();
-        glPopMatrix();
-
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        glPopMatrix();
-        glPopAttrib();
-    }
+    
 
     // --- 6. DRAW 3D SCENE (PERSPECTIVE) ---
     {
@@ -243,9 +135,8 @@ GLint Scene::drawScene()
 
         // Draw player avatar
         glPushMatrix();
-            glTranslatef(playerPos.x, playerPos.y, playerPos.z);
-            glScalef(0.05f, 0.05f, 0.05f);
-            myAvatar->Draw();
+            //glScalef(0.05f, 0.05f, 0.05f);
+            myAvatar->drawModel();
         glPopMatrix();
     }
 

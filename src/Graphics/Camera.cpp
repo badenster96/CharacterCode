@@ -1,6 +1,5 @@
 #include "Graphics/Camera.h"
 #include <cmath>
-#include <cstdio>
 
 Camera::Camera()
 {
@@ -13,9 +12,21 @@ Camera::Camera()
     maxPitch = 85.0f;
     minDistance = 2.0f;
     maxDistance = 50.0f;
+
     mouseSensitivity = 0.2f;
     keyZoomSpeed = 10.0f;
     wheelZoomAmount = 1.0f;
+
+    targetX = 0.0f;
+    targetY = 0.0f;
+    targetZ = 0.0f;
+}
+
+void Camera::setTarget(float x, float y, float z)
+{
+    targetX = x;
+    targetY = y;
+    targetZ = z;
 }
 
 void Camera::update(Inputs* input, float dt)
@@ -25,8 +36,6 @@ void Camera::update(Inputs* input, float dt)
     // --- Orbiting ---
     angleY += input->mouseDeltaX * mouseSensitivity;
     angleX -= input->mouseDeltaY * mouseSensitivity;
-    std::printf("Mouse delta: X=%f, Y=%f\n", input->mouseDeltaX, input->mouseDeltaY);
-
 
     if (angleX > maxPitch) angleX = maxPitch;
     if (angleX < minPitch) angleX = minPitch;
@@ -45,7 +54,7 @@ void Camera::update(Inputs* input, float dt)
     input->wheelDelta = 0.0;
 }
 
-void Camera::applyView(float targetX, float targetY, float targetZ)
+void Camera::applyView()
 {
     float angleXRad = angleX * M_PI / 180.0f;
     float angleYRad = angleY * M_PI / 180.0f;

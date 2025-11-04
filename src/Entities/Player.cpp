@@ -106,80 +106,51 @@ void Player::drawModel()
 }
 
 // --- NEW CORE FUNCTION: Handles Input, Movement, and Animation ---
-void Player::handleInputAndMove(float dt, float cameraAngleY, const Inputs* kBMs, const Settings& settings)
+void Player::handleInputAndMove(float dt, Camera* camera, Inputs* kBMs, const Settings& settings)
 {
     // --- 1. Movement Speed Calculation ---
-    float playerMoveSpeed = stats["Speed"] * settings.playerBaseSpeed * dt;
-    if (kBMs->isSprinting) {
-        playerMoveSpeed *= settings.playerSprintMultiplier;
-    }
+    float playerMoveSpeed = settings.playerBaseSpeed * dt;
+    if (kBMs->isSprinting) playerMoveSpeed *= settings.playerSprintMultiplier;
 
-    // --- 2. Calculate Camera-Relative Directions ---
-    float angleYRad = cameraAngleY * M_PI / 180.0f;
-    
-    vec2 camForward;
-    camForward.x = -sin(angleYRad);
-    camForward.y = -cos(angleYRad);
-    vec2 camRight;
-    camRight.x = cos(angleYRad);
-    camRight.y = -sin(angleYRad);
+    // Use Camera class for direction
+    float angleYRad = camera->angleY * M_PI / 180.0f;  // <-- camera class
+    vec2 camForward = { -sin(angleYRad), -cos(angleYRad) };
+    vec2 camRight   = {  cos(angleYRad), -sin(angleYRad) };
+
+    // Combine movement input
     vec2 moveVector = {0.0f, 0.0f};
-    bool isMoving = false;
+    if (kBMs->isMovingUp)    { moveVector.x += camForward.x; moveVector.y += camForward.y; }
+    if (kBMs->isMovingDown)  { moveVector.x -= camForward.x; moveVector.y -= camForward.y; }
+    if (kBMs->isMovingLeft)  { moveVector.x -= camRight.x;   moveVector.y -= camRight.y; }
+    if (kBMs->isMovingRight) { moveVector.x += camRight.x;   moveVector.y += camRight.y; }
 
-    // --- 3. Accumulate Movement Based on Input States ---
-    if (kBMs->isMovingUp) {
-        moveVector.x += camForward.x;
-        moveVector.y += camForward.y;
-        isMoving = true;
-    }
-    if (kBMs->isMovingDown) {
-        moveVector.x -= camForward.x;
-        moveVector.y -= camForward.y;
-        isMoving = true;
-    }
-    if (kBMs->isMovingLeft) {
-        moveVector.x -= camRight.x;
-        moveVector.y -= camRight.y;
-        isMoving = true;
-    }
-    if (kBMs->isMovingRight) {
-        moveVector.x += camRight.x;
-        moveVector.y += camRight.y;
-        isMoving = true;
-    }
+    bool isMoving = (moveVector.x != 0.0f || moveVector.y != 0.0f);
 
-    // --- 4. Apply Movement and Set Player Animation/Rotation ---
-    if (isMoving) {
+    if (isMoving)
+    {
+        // Normalize movement vector
         float mag = sqrt(moveVector.x * moveVector.x + moveVector.y * moveVector.y);
-        if (mag > 0.0f) {
-            moveVector.x /= mag;
-            moveVector.y /= mag;
-        }
-        
-        // Update the player's world position
+        moveVector.x /= mag;
+        moveVector.y /= mag;
+
+        // Apply movement
         playerPos.x += moveVector.x * playerMoveSpeed;
         playerPos.z += moveVector.y * playerMoveSpeed;
-        
-        float targetAngle = atan2(moveVector.x, moveVector.y) * 180.0f / M_PI;
 
-        // Optionally smooth rotation (comment out if you want instant turning)
-        float rotationSpeed = 720.0f * dt; // degrees per second
-        float deltaAngle = fmod((targetAngle - rotateY + 540.0f), 360.0f) - 180.0f;
-        if (fabs(deltaAngle) < rotationSpeed)
-            rotateY = targetAngle;
-        else
-            rotateY += (deltaAngle > 0 ? rotationSpeed : -rotationSpeed);
-
-        // Apply the rotation to the model so it faces movement direction
-        setRotation(0.0f, rotateY, 0.0f);
-
+        // Rotate avatar to face movement
+        rotateY = atan2(moveVector.x, moveVector.y) * 180.0f / M_PI;
         walk();
-    } else {
+    }
+    else
+    {
         stand();
     }
-    
-    // Update the animation frame
-    update(dt); 
+
+    // Update avatar animation
+    update(dt);
+    camera->setTarget(playerPos.x, playerPos.y, playerPos.z);
+    camera->update(kBMs, 0.0f);
+    camera->applyView();
 }
 // --- End NEW CORE FUNCTION ---
 

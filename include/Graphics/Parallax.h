@@ -16,9 +16,9 @@ class Parallax
         Parallax();
         virtual ~Parallax();
 
-        void drawSquare(); // <-- CHANGED
+        void draw();
         void parallaxInit(const char* fileName);
-        void scroll(bool, string, float);
+        void scroll(bool autoScroll, float speedX, float speedY);
 
     private:
         TextureLoader* bTex;

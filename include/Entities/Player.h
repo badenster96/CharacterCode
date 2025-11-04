@@ -7,6 +7,7 @@
 #include "Helpers/Settings.h"
 #include "Virtuals/Item.h" // Item struct (assumed to exist)
 #include "Graphics/_3DModelLoader.h" // For Model base class
+#include "Graphics/Camera.h" // For Camera class
 
 #include <string>
 #include <map>
@@ -35,7 +36,7 @@ public:
     void drawModel(); 
 
     // --- NEW: Function to handle input, movement, and animation updates ---
-    void handleInputAndMove(float dt, float cameraAngleY, const Inputs* kBMs, const Settings& settings);
+    void handleInputAndMove(float dt, Camera* camera, Inputs* kBMs, const Settings& settings);
     vec3 getPosition() const { return playerPos; }
 
     // Existing model functions (assuming they are part of the base Model)

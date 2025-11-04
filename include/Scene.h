@@ -4,6 +4,7 @@
 #include "Helpers/Common.h"
 #include "Graphics/Camera.h"
 #include "Helpers/Settings.h"
+#include "Entities/Player.h"
 
 // --- Forward Declarations ---
 class Inputs;
@@ -36,7 +37,7 @@ public:
 
 private:
     // --- Scene Objects (Heap-allocated) ---
-    _3DModelLoader* myAvatar;
+    Player* myAvatar;
     Inputs* kBMs;
     Parallax* foregroundPlx;
     Parallax* backgroundPlx;

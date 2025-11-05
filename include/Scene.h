@@ -1,63 +1,36 @@
 #pragma once
-
-#include <windows.h>
-#include "Helpers/Common.h"
+#include "IO/Inputs.h"
 #include "Graphics/Camera.h"
-#include "Helpers/Settings.h"
-#include "Entities/Player.h"
+#include "Graphics/Parallax.h"
+#include "Level.h"
+#include <windows.h>
+#include <gl/gl.h>
 
-// --- Forward Declarations ---
-class Inputs;
-class Parallax;
-class TextureLoader;
-class Light;
-class _3DModelLoader;
+struct SceneSettings {
+    float cameraScrollScale = 0.01f;
+    float foregroundScrollSpeed = 0.1f;
+    float backgroundScrollSpeed = 0.05f;
+};
 
-// --- Constants ---
-#ifndef M_PI
-#define M_PI 3.1415926535
-#endif
-
-
-
-/**
- * @class Scene
- * @brief Manages all objects, logic, and rendering for the main game scene.
- */
-class Scene
-{
+class Scene {
 public:
     Scene();
-    virtual ~Scene();
+    ~Scene();
 
     GLint initGL();
     GLint drawScene();
     GLvoid reSizeScene(int width, int height);
-    int winMsg(HWND, UINT, WPARAM, LPARAM);
+    int winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 private:
-    // --- Scene Objects (Heap-allocated) ---
-    Player* myAvatar;
     Inputs* kBMs;
+    Camera* camera;
     Parallax* foregroundPlx;
     Parallax* backgroundPlx;
-    TextureLoader* road;
-    TextureLoader* bg;
-    Light* mainLight;
-    Camera* camera;
-
-    // --- Player & Camera State ---
-    vec3  playerPos;
-    float cameraAngleY;
-    float cameraAngleX;
-    float cameraDistance;
-
-    // --- Window & Time ---
-    int   screenWidth;
-    int   screenHeight;
+    SceneSettings settings;
+    int screenWidth;
+    int screenHeight;
     DWORD lastFrameTicks;
 
-    // --- CONFIGURATION ---
-    Settings settings;
+    Level* level;
 };
-

@@ -37,7 +37,9 @@ public:
 
     // --- Mouse State (for Scene to read) ---
     double mouseDeltaX; // Change in mouse X (from center)
+    double mouseDeltaPrevX; // Previous change in mouse X (from center)
     double mouseDeltaY; // Change in mouse Y (from center)
+    double mouseDeltaPrevY; // Previous change in mouse Y (from center)
     double wheelDelta;  // Mouse wheel scroll amount
 
     // --- Window State (for Scene to set) ---

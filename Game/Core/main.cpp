@@ -2,6 +2,7 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include <memory>
+
 #include "Core/SceneManager.h"
 #include "Scenes/Level.h"
 

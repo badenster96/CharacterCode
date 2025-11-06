@@ -15,7 +15,9 @@ Inputs::Inputs()
 
     // Initialize mouse deltas
     mouseDeltaX = 0.0;
+    mouseDeltaPrevX = 0.0;
     mouseDeltaY = 0.0;
+    mouseDeltaPrevY = 0.0;
     wheelDelta = 0.0;
 
     // Initialize window center (Scene will update this)
@@ -113,6 +115,8 @@ void Inputs::mouseMove(double x, double y)
     mouseDeltaY = (y - windowCenterY);
 
     // Recenter cursor immediately
+    mouseDeltaPrevX = mouseDeltaX;
+    mouseDeltaPrevY = mouseDeltaY;
     POINT center = { windowCenterX, windowCenterY };
     HWND hwnd = GetForegroundWindow(); // assumes active game window
     ClientToScreen(hwnd, &center);

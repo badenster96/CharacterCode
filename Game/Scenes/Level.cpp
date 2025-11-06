@@ -44,6 +44,7 @@ void Level::update(float dt) {
 
 void Level::draw() {
     if (!kBMs) return;
+    auto& s = Settings::get();
 
     // --- Parallax background ---
     
@@ -51,16 +52,15 @@ void Level::draw() {
 
     glDisable(GL_DEPTH_TEST); // draw background without depth test
     glDisable(GL_LIGHTING);
+    float parallaxScrollFore = -kBMs->mouseDeltaPrevX * s.cameraScrollScale;
+    float parallaxScrollBack = -kBMs->mouseDeltaPrevX * s.cameraScrollScale;
+    std::cout << "MouseX: " << kBMs->mouseDeltaPrevX << "|MouseY: " << kBMs->mouseDeltaPrevY << std::endl;
 
     glPushMatrix();
-        if(kBMs->isMovingLeft) {
-            isMLeftDebug = true;
-            std::cout << "Moving Left!" << std::endl;
-            foregroundPlx->scroll(true, -settings.foregroundScrollSpeed, 0.0f);
-            backgroundPlx->scroll(true, -settings.backgroundScrollSpeed, 0.0f);
-        }
-        backgroundPlx->draw();
-        foregroundPlx->draw();
+    foregroundPlx->scroll(true, parallaxScrollFore * s.foregroundScrollSpeed, 0.0f);
+    backgroundPlx->scroll(true, parallaxScrollBack * s.backgroundScrollSpeed, 0.0f);
+    backgroundPlx->draw();
+    foregroundPlx->draw();
     glPopMatrix();
 
     // --- 3D objects ---

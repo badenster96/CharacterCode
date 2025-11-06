@@ -2,8 +2,8 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 #include <memory>
-#include "SceneManager.h"
-#include "Level.h"
+#include "Core/SceneManager.h"
+#include "Scenes/Level.h"
 
 // Globals
 std::unique_ptr<SceneManager> gSceneManager;

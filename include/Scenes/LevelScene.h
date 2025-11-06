@@ -1,6 +1,6 @@
 #pragma once
 #include "Scene.h"
-#include "Level.h"
+#include "Scenes/Level.h"
 #include <memory>
 
 class LevelScene : public Scene {

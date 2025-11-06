@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <memory>
-#include "Scene.h"
+#include "Scenes/Scene.h"
 #include "Graphics/Camera.h"
 #include "IO/Inputs.h"
 

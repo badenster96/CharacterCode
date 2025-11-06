@@ -1,3 +1,5 @@
+/* Scene virtual: exists to define scenes in SceneManager*/
+
 #pragma once
 #include <windows.h>
 #include "IO/Inputs.h"

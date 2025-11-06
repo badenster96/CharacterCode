@@ -1,11 +1,12 @@
 #pragma once
-#include "Scene.h"
+#include "Scenes/Scene.h"
 #include "IO/Inputs.h"
 #include "Graphics/Camera.h"
 #include "Graphics/Parallax.h"
 #include "Graphics/TextureLoader.h"
 #include "Entities/Player.h"
 #include "Graphics/Light.h"
+
 #include <memory>
 
 class Level : public Scene {

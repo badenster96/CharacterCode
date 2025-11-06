@@ -1,5 +1,6 @@
 #include "Graphics/Camera.h"
 #include <cmath>
+#include <iostream>
 
 Camera::Camera()
 {
@@ -10,7 +11,7 @@ Camera::Camera()
     // Default settings
     minPitch = 5.0f;
     maxPitch = 85.0f;
-    minDistance = 2.0f;
+    minDistance = 15.0f;
     maxDistance = 50.0f;
 
     mouseSensitivity = 0.2f;
@@ -34,11 +35,14 @@ void Camera::update(Inputs* input, float dt)
     if (!input) return;
 
     // --- Orbiting ---
-    angleY += input->mouseDeltaX * mouseSensitivity;
     angleX -= input->mouseDeltaY * mouseSensitivity;
+    angleY += input->mouseDeltaX * mouseSensitivity;
 
+    // Clamp
     if (angleX > maxPitch) angleX = maxPitch;
     if (angleX < minPitch) angleX = minPitch;
+    if (angleY < 0.0f) angleY += 360.0f;
+    if (angleY >= 360.0f) angleY -= 360.0f;
 
     // --- Zooming ---
     if (input->wheelDelta != 0.0) distance -= input->wheelDelta * wheelZoomAmount;
@@ -53,6 +57,7 @@ void Camera::update(Inputs* input, float dt)
     input->mouseDeltaY = 0.0;
     input->wheelDelta = 0.0;
 }
+
 
 void Camera::applyView()
 {

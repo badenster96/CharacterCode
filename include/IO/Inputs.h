@@ -23,6 +23,7 @@ public:
     void mouseEventUp();
     void mouseWheel(double delta);
     void mouseMove(double x, double y);
+    void setWindowCenter(int width, int height);
 
     // --- Keyboard State (for Scene to read) ---
     bool isMovingLeft;

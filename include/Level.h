@@ -1,26 +1,38 @@
 #pragma once
-#include "Graphics/Light.h"
-#include "Graphics/_3DModelLoader.h"
-#include "Entities/Player.h"
-#include "Graphics/TextureLoader.h"
-#include "Graphics/Camera.h"
+#include "Scene.h"
 #include "IO/Inputs.h"
-#include <windows.h>
-#include <gl/glu.h>
+#include "Graphics/Camera.h"
+#include "Graphics/Parallax.h"
+#include "Graphics/TextureLoader.h"
+#include "Entities/Player.h"
+#include "Graphics/Light.h"
+#include <memory>
 
-class Level {
+class Level : public Scene {
 public:
     Level();
     ~Level();
 
+    // --- Scene interface ---
+    void attachSystems(Inputs* inputs, Camera* camera) override;
+    void update(float dt) override;
+    void draw() override;
+    void handleWinMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+
+    // --- Level-specific ---
     void init();
-    void update(float dt, Camera* camera, Inputs* kBMs);
-    void draw();
 
 private:
-    Light* mainLight;
-    Player* myAvatar;
-    TextureLoader* road;
+    Inputs* kBMs;       // Shared input system
+    Camera* camera;     // Shared camera system
 
+    // Level objects
+    std::unique_ptr<Player> myAvatar;
+    std::unique_ptr<Light> mainLight;
+    std::unique_ptr<TextureLoader> road;
+    std::unique_ptr<Parallax> foregroundPlx;
+    std::unique_ptr<Parallax> backgroundPlx;
+
+    // Player position (optional, you can manage this inside Player)
     float playerPosX, playerPosY, playerPosZ;
 };

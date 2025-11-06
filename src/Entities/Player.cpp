@@ -93,7 +93,7 @@ void Player::initModel(const char *fileName)
 // This is the OVERRIDDEN draw function
 void Player::drawModel()
 {
-    // The transformations are applied in Scene.cpp, so we just draw the model locally.
+    glPushMatrix();
     if (md2Model)
     {
         glPushMatrix();
@@ -103,6 +103,7 @@ void Player::drawModel()
         md2Model->Draw();
         glPopMatrix();
     }
+    glPopMatrix();
 }
 
 // --- NEW CORE FUNCTION: Handles Input, Movement, and Animation ---
@@ -148,9 +149,6 @@ void Player::handleInputAndMove(float dt, Camera* camera, Inputs* kBMs, const Se
 
     // Update avatar animation
     update(dt);
-    camera->setTarget(playerPos.x, playerPos.y, playerPos.z);
-    camera->update(kBMs, 0.0f);
-    camera->applyView();
 }
 // --- End NEW CORE FUNCTION ---
 

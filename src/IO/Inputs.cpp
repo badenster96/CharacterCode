@@ -1,4 +1,5 @@
 #include "IO/Inputs.h"
+#include <iostream>
 
 Inputs::Inputs()
 {
@@ -105,15 +106,21 @@ void Inputs::mouseWheel(double delta)
     wheelDelta = delta / 120.0;
 }
 
-// Controls mouse movement for mouselook
 void Inputs::mouseMove(double x, double y)
 {
-    // Calculate the delta (change) from the center of the window.
-    // Scene::winMsg forces the cursor to the center *after* this,
-    // so this always measures the distance from the center.
-    // 
+    // Compute delta from window center
     mouseDeltaX = (x - windowCenterX);
     mouseDeltaY = (y - windowCenterY);
 
-    // We no longer need prev_Mouse_X or prev_Mouse_Y.
+    // Recenter cursor immediately
+    POINT center = { windowCenterX, windowCenterY };
+    HWND hwnd = GetForegroundWindow(); // assumes active game window
+    ClientToScreen(hwnd, &center);
+    SetCursorPos(center.x, center.y);
+}
+
+
+void Inputs::setWindowCenter(int width, int height) {
+    windowCenterX = width / 2;
+    windowCenterY = height / 2;
 }

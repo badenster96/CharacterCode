@@ -1,36 +1,19 @@
 #pragma once
+#include <windows.h>
 #include "IO/Inputs.h"
 #include "Graphics/Camera.h"
-#include "Graphics/Parallax.h"
-#include "Level.h"
-#include <windows.h>
-#include <gl/gl.h>
-
-struct SceneSettings {
-    float cameraScrollScale = 0.01f;
-    float foregroundScrollSpeed = 0.1f;
-    float backgroundScrollSpeed = 0.05f;
-};
 
 class Scene {
 public:
-    Scene();
-    ~Scene();
+    virtual ~Scene() = default;
 
-    GLint initGL();
-    GLint drawScene();
-    GLvoid reSizeScene(int width, int height);
-    int winMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+    // Attach shared systems (inputs, camera)
+    virtual void attachSystems(Inputs* inputs, Camera* camera) = 0;
 
-private:
-    Inputs* kBMs;
-    Camera* camera;
-    Parallax* foregroundPlx;
-    Parallax* backgroundPlx;
-    SceneSettings settings;
-    int screenWidth;
-    int screenHeight;
-    DWORD lastFrameTicks;
+    // Called every frame
+    virtual void update(float dt) = 0;
+    virtual void draw() = 0;
 
-    Level* level;
+    // Handle OS-level messages
+    virtual void handleWinMsg(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
 };

@@ -1,3 +1,7 @@
 #pragma once 
 
-#include "Virtuals/Item.h"
+#include "Inventory/Item.h"
+
+struct Training : public Item {
+        bool isTraining() {return true;}
+};

@@ -6,10 +6,18 @@ project(CharacterCode)
 # initialize clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-
-link_directories(
-    "lib"
+include(FetchContent)
+FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3 # or the latest stable version
 )
+FetchContent_MakeAvailable(nlohmann_json)
+
+
+
+
+link_directories("lib")
 
 # --- Define Output Directories ---
 # This line tells CMake to put all executables (.exe) into a "bin" folder
@@ -38,12 +46,13 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
     "PROJECT_SOURCE_DIR=\"${PROJECT_SOURCE_DIR}\""
 )
 
-target_link_libraries(CharacterCode
+target_link_libraries(CharacterCode PRIVATE
     SOIL
     freeglut
     gdi32
     opengl32
     glu32
+    nlohmann_json::nlohmann_json
     ${OPENGL_LIBRARIES}
     ${GLUT_LIBRARY}
 )

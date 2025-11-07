@@ -33,7 +33,4 @@ private:
     std::unique_ptr<TextureLoader> road;
     std::unique_ptr<Parallax> foregroundPlx;
     std::unique_ptr<Parallax> backgroundPlx;
-
-    // Player position (optional, you can manage this inside Player)
-    float playerPosX, playerPosY, playerPosZ;
 };

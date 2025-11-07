@@ -3,8 +3,7 @@
 #include <gl/glu.h>
 
 Level::Level()
-    : kBMs(nullptr), camera(nullptr),
-      playerPosX(0.0f), playerPosY(-3.0f), playerPosZ(0.0f)
+    : kBMs(nullptr), camera(nullptr)
 {}
 
 Level::~Level() = default;
@@ -54,7 +53,7 @@ void Level::draw() {
     glDisable(GL_LIGHTING);
     float parallaxScrollFore = -kBMs->mouseDeltaPrevX * s.cameraScrollScale;
     float parallaxScrollBack = -kBMs->mouseDeltaPrevX * s.cameraScrollScale;
-    std::cout << "MouseX: " << kBMs->mouseDeltaPrevX << "|MouseY: " << kBMs->mouseDeltaPrevY << std::endl;
+    //std::cout << "MouseX: " << kBMs->mouseDeltaPrevX << "|MouseY: " << kBMs->mouseDeltaPrevY << std::endl;
 
     glPushMatrix();
     foregroundPlx->scroll(true, parallaxScrollFore * s.foregroundScrollSpeed, 0.0f);

@@ -8,7 +8,6 @@ struct Object {
         Object(std::unordered_map<std::string, double>);
         //getters
         std::string getName();
-        int getID();
         std::unordered_map<std::string, double> getStats();
         double getStat(std::string stat);
         void setName(std::string newName);
@@ -17,7 +16,6 @@ struct Object {
         void setStats(std::unordered_map<std::string,double> newStats);
         void setStat(std::string stat, double newValue);
 
-        std::string name, type;
-        int ID;
+        std::string name, type, id;
         std::unordered_map<std::string, double> stats;
 };

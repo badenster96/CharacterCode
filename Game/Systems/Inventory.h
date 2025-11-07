@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Virtuals/Item.h"
+#include "Inventory/Item.h"
 #include "Inventory/Weapon.h"
 #include "Inventory/Gizmo.h"
 #include "Inventory/Gadget.h"
@@ -13,8 +13,6 @@
 class Inventory {
     public:
     Inventory();
-    // Loads list of items from "items"
-    void loadInventory();
     Item getItem(int ID);
 
     // Debug functions

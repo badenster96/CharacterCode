@@ -5,7 +5,7 @@
 #include "Helpers/Timer.h"     // Timer class (assumed to exist)
 #include "Helpers/Common.h"
 #include "Helpers/Settings.h"
-#include "Virtuals/Item.h" // Item struct (assumed to exist)
+#include "Inventory/Item.h" // Item struct (assumed to exist)
 #include "Graphics/_3DModelLoader.h" // For Model base class
 #include "Graphics/Camera.h" // For Camera class
 
@@ -50,7 +50,7 @@ public:
     void addStat(std::string stat, double value);
     int dodgeHandler();
     double armorHandler(double penetration);
-    void addItemToInventory(Item newItem);
+    // void addItemToInventory(Item newItem);
     bool isWeapon(Item item);
     bool isGadget(Item item);
     void equipItem(Item item);

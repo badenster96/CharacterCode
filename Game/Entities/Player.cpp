@@ -173,15 +173,15 @@ double Player::armorHandler(double penetration) {
     double effectiveArmor = abs(stats["Armor"] - penetration);
     return 1 - (effectiveArmor / (10 + effectiveArmor));
 }
-void Player::addItemToInventory(Item newItem) {
-    int newID = newItem.ID;
-    if(itemStats.size() <= newItem.ID) {itemStats.resize(newItem.ID + 1);} 
-    if(itemStats.at(newID).count == 0){
-        itemStats.at(newItem.ID) = newItem;
-        itemStats.at(newID).count = 1;
-    } else {itemStats.at(newID).count += 1;}
-    equipItem(newItem);
-}
+// void Player::addItemToInventory(Item newItem) {
+//     int newID = newItem.ID;
+//     if(itemStats.size() <= newItem.ID) {itemStats.resize(newItem.ID + 1);} 
+//     if(itemStats.at(newID).count == 0){
+//         itemStats.at(newItem.ID) = newItem;
+//         itemStats.at(newID).count = 1;
+//     } else {itemStats.at(newID).count += 1;}
+//     equipItem(newItem);
+// }
 bool Player::isWeapon(Item item){
     if(item.type == "Weapon") return true;
     return false;

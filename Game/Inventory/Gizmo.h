@@ -1,3 +1,7 @@
 #pragma once 
 
-#include "Virtuals/Item.h"
+#include "Inventory/Item.h"
+
+struct Gizmo : public Item {
+        bool isGadget() {return true;}
+};

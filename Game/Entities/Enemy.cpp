@@ -24,4 +24,4 @@ Enemy::Enemy(int newDamage, int newPenetration){
 
 void Enemy::setAttack(Attack newAtk){ attacks.at(0) = newAtk;}
 
-Attack Enemy::getAttack(){return attacks.at(0);}
+Model::Attack Enemy::getAttack(){return attacks.at(0);}

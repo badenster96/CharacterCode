@@ -2,7 +2,6 @@
 #define MODEL_H
 
 #include <vector>
-#include "gameplay/Attack.h"
 // Forward-declare TextureLoader to avoid including the header here
 class TextureLoader;
 
@@ -36,9 +35,18 @@ protected:
     double posX, posY, posZ;
     double scaleX, scaleY, scaleZ; // Changed from single 'scale'
     int objectID;
-    std::vector<Attack> attacks;
     // The texture for this model.
     TextureLoader* tex; 
+    struct Attack{
+        Attack() {
+            damage = 1;
+            penetration = 0;
+        }
+        Attack(double newDamage, double newPenetration) : damage(newDamage), penetration(newPenetration) {}
+        double damage;
+        double penetration;
+    };
+    std::vector<Attack> attacks;
 };
 
 #endif // MODEL_H

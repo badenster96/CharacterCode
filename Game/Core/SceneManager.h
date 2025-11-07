@@ -5,6 +5,7 @@
 #include "Scenes/Scene.h"
 #include "Graphics/Camera.h"
 #include "IO/Inputs.h"
+#include "Core/FileLoader.h"
 
 class SceneManager {
 public:
@@ -19,6 +20,7 @@ public:
     Scene* getCurrentScene(){return currentScene;}
     Inputs* getInputs() { return inputs.get(); }
     Camera* getCamera() { return camera.get(); }
+    FileLoader fl;
 private:
     std::unordered_map<std::string, std::unique_ptr<Scene>> scenes;
     Scene* currentScene;

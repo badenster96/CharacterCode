@@ -1,0 +1,40 @@
+{
+        "gizmos": [
+                {
+                        "id": "Spinach",
+                        "name": "Spinach",
+                        "health": 25,
+                        "speed": 0.2
+                },
+                {
+                        "id": "adderall",
+                        "name": "Adderall",
+                        "speed": 0.1
+                },
+                {
+                        "id": "bump_stock",
+                        "name": "Bump Stock",
+                        "attack_speed": 0.1
+                },
+                {
+                        "id": "hollow_point",
+                        "name": "Hollow Point",
+                        "damage": 2
+                },
+                {
+                        "id": "sniper_scope",
+                        "name": "Sniper Scope",
+                        "critical_chance": 0.1
+                },
+                {
+                        "id": "bulletproof_vest",
+                        "name": "Bulletprpoof Vest",
+                        "armor": 2
+                },
+                {
+                        "id": "piercing_rounds",
+                        "name": "Piercing Rounds",
+                        "armor_piercing": 2
+                }
+        ]
+}

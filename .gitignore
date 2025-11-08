@@ -9,6 +9,6 @@
 *.o
 *.obj
 *.dll
-# *.lib
+*.lib
 *.a
 *.so

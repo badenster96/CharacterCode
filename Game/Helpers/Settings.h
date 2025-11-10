@@ -25,7 +25,7 @@ struct Settings
     std::string weaponJSON     = itemJSONFolder + "/weapons.json";
     std::string gadgetJSON     = itemJSONFolder + "/gadgets.json";
     std::string gizmoJSON      = itemJSONFolder + "/gizmos.json";
-    std::string trainingJSON   = itemJSONFolder + "trainings.json";
+    std::string trainingJSON   = itemJSONFolder + "/trainings.json";
     // Models
 
 

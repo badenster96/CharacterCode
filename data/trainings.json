@@ -1,0 +1,11 @@
+{
+        "trainings": [
+                {
+                        "id": "assault_rifle",
+                        "name": "Assault Rifle",
+                        "damage": 2,
+                        "armor": 3,
+                        "attack_speed": 0.8
+                }
+        ]
+}

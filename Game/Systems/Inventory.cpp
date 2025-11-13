@@ -3,11 +3,15 @@
 #include "Systems/Inventory.h"
 
 Inventory::Inventory() {
-        
+        loadItems();
 }
 
-Item Inventory::getItem(int ID) {
-        return inventory.at(ID);
+void Inventory::loadItems() {
+        FileLoader fL;
+        weaponStats = fL.getWeapons();
+        gadgetStats = fL.getGadgets();
+        gizmoStats = fL.getGizmos();
+        trainingStats = fL.getTrainings();
 }
 
 // Debug functions

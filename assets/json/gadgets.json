@@ -1,0 +1,11 @@
+{
+        "gadgets": [
+                {
+                        "id": "sneakers",
+                        "name": "Sneakers",
+                        "speed": 2,
+                        "armor": 1,
+                        "attack_speed": 0.8
+                }
+        ]
+}

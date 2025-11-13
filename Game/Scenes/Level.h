@@ -6,6 +6,7 @@
 #include "Graphics/TextureLoader.h"
 #include "Entities/Player.h"
 #include "Graphics/Light.h"
+#include "Helpers/Settings.h"
 
 #include <memory>
 

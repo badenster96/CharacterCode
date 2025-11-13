@@ -20,16 +20,16 @@ void Level::init() {
     glEnable(GL_COLOR_MATERIAL);
 
     myAvatar = std::make_unique<Player>();
-    myAvatar->initModel("models/Tekk/tris.md2");
+    myAvatar->initModel((Settings::get().playerModel).c_str());
 
     road = std::make_unique<TextureLoader>();
-    road->loadTexture("images/road.jpg");
+    road->loadTexture((Settings::get().road).c_str());
 
     foregroundPlx = std::make_unique<Parallax>();
-    foregroundPlx->parallaxInit("images/floor.png");
+    foregroundPlx->parallaxInit((Settings::get().parallaxFG).c_str());
 
     backgroundPlx = std::make_unique<Parallax>();
-    backgroundPlx->parallaxInit("images/p.jpg");
+    backgroundPlx->parallaxInit((Settings::get().parallaxBG).c_str());
 }
 
 void Level::update(float dt) {

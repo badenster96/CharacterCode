@@ -19,19 +19,27 @@ struct Settings
     float mouseSensitivity       = 0.2f;
 
     // --- File Locations ---
+    std::string assetsFolder   = projSrc + "/assets";
 
     // Items
-    std::string itemJSONFolder = projSrc + "/data";
-    std::string weaponJSON     = itemJSONFolder + "/weapons.json";
-    std::string gadgetJSON     = itemJSONFolder + "/gadgets.json";
-    std::string gizmoJSON      = itemJSONFolder + "/gizmos.json";
-    std::string trainingJSON   = itemJSONFolder + "/trainings.json";
+    std::string JSONFolder     = assetsFolder + "/json";
+    std::string weaponJSON     = JSONFolder + "/weapons.json";
+    std::string gadgetJSON     = JSONFolder + "/gadgets.json";
+    std::string gizmoJSON      = JSONFolder + "/gizmos.json";
+    std::string trainingJSON   = JSONFolder + "/trainings.json";
     // Models
+    std::string modelsFolder   = assetsFolder + "/models/Tekk";
+    std::string playerModel    = modelsFolder + "/tris.md2";
+    // Images + Textures
+    std::string imagesFolder   = assetsFolder + "/images";
+    // Parallax BG
+    std::string parallaxBG     = imagesFolder + "/p.jpg";
+    std::string parallaxFG     = imagesFolder + "/floor.png";
+    // Ground Textures
+    std::string road           = imagesFolder + "/road.jpg";
 
-
-
-
-
+    // Characters
+    std::string charactersJSON = JSONFolder + "/characters.json";
 
     // --- Singleton access ---
     static Settings& get() {

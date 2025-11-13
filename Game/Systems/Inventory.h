@@ -5,6 +5,7 @@
 #include "Inventory/Gizmo.h"
 #include "Inventory/Gadget.h"
 #include "Inventory/Training.h"
+#include "Core/FileLoader.h"
 
 #include <fstream>
 #include <sstream>
@@ -13,12 +14,22 @@
 class Inventory {
     public:
     Inventory();
-    Item getItem(int ID);
+    void loadItems();
+    auto getItem(std::string iD);
+
+    Weapon getWeapon(std::string name){return weaponStats[name];}
+    Gizmo getGizmo(std::string name){return gizmoStats[name];}
+    Gadget getGadget(std::string name){return gadgetStats[name];}
+    Training getTraining(std::string name){return trainingStats[name];}
 
     // Debug functions
     int totalItems();
 
     private:
+    std::unordered_map<std::string, Weapon> weaponStats;
+    std::unordered_map<std::string, Gizmo> gizmoStats;
+    std::unordered_map<std::string, Gadget> gadgetStats;
+    std::unordered_map<std::string, Training> trainingStats;
     // Master inventory list of all items in the game, loaded from "items"
     std::vector<Item> inventory;
 };

@@ -2,7 +2,7 @@
 
 #include "IO/Inputs.h" // Inputs class (assumed to exist)
 #include "Model.h"     // Model base class (assumed to exist)
-#include "Helpers/Timer.h"     // Timer class (assumed to exist)
+#include "Core/Timer.h"     // Timer class (assumed to exist)
 #include "Helpers/Common.h"
 #include "Helpers/Settings.h"
 #include "Inventory/Item.h" // Item struct (assumed to exist)

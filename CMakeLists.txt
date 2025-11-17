@@ -34,7 +34,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # --- Corrected Order ---
 
 # 1. Find all your .cpp files in the "src" directory
-file(GLOB_RECURSE SRC_FILES "Game/*.cpp")
+file(GLOB_RECURSE SRC_FILES "src/*.cpp")
 
 # 2. Add the executable target.
 #    This line CREATES the target.
@@ -59,7 +59,7 @@ target_link_libraries(CharacterCode PRIVATE
 # 3. Add your "include" directory to the target.
 #    This line MODIFIES the target.
 target_include_directories(${PROJECT_NAME} PUBLIC 
-    ${PROJECT_SOURCE_DIR}/Game
+    ${PROJECT_SOURCE_DIR}/include
 
 )
 
